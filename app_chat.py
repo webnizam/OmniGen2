@@ -47,25 +47,26 @@ def load_pipeline(accelerator, weight_dtype, args):
         pipeline = pipeline.to(accelerator.device)
     return pipeline
 
+
 def run(
-    instruction,
-    width_input,
-    height_input,
-    scheduler,
-    num_inference_steps,
-    image_input_1,
-    image_input_2,
-    image_input_3,
-    negative_prompt,
-    guidance_scale_input,
-    img_guidance_scale_input,
-    cfg_range_start,
-    cfg_range_end,
-    num_images_per_prompt,
-    max_input_image_side_length,
-    max_pixels,
-    seed_input,
-    progress=gr.Progress(),
+        instruction,
+        width_input,
+        height_input,
+        scheduler,
+        num_inference_steps,
+        image_input_1,
+        image_input_2,
+        image_input_3,
+        negative_prompt,
+        guidance_scale_input,
+        img_guidance_scale_input,
+        cfg_range_start,
+        cfg_range_end,
+        num_images_per_prompt,
+        max_input_image_side_length,
+        max_pixels,
+        seed_input,
+        progress=gr.Progress(),
 ):
     input_images = [image_input_1, image_input_2, image_input_3]
     input_images = [img for img in input_images if img is not None]
@@ -74,7 +75,8 @@ def run(
 
     if seed_input == -1:
         seed_input = random.randint(0, 2**16 - 1)
-    generator = torch.Generator(device=accelerator.device).manual_seed(seed_input)
+    generator = torch.Generator(
+        device=accelerator.device).manual_seed(seed_input)
 
     def progress_callback(cur_step, timesteps):
         frac = (cur_step + 1) / float(timesteps)
@@ -89,7 +91,7 @@ def run(
             solver_order=2,
             prediction_type="flow_prediction",
         )
-        
+
     results = pipeline(
         prompt=instruction,
         input_images=input_images,
@@ -247,8 +249,8 @@ def get_example():
             "euler",
             50,
             os.path.join(
-                ROOT_DIR, "example_images/46e79704-c88e-4e68-97b4-b4c40cd29826.png"
-            ),
+                ROOT_DIR,
+                "example_images/46e79704-c88e-4e68-97b4-b4c40cd29826.png"),
             None,
             None,
             NEGATIVE_PROMPT,
@@ -268,8 +270,8 @@ def get_example():
             "euler",
             50,
             os.path.join(
-                ROOT_DIR, "example_images/vicky-hladynets-C8Ta0gwPbQg-unsplash.jpg"
-            ),
+                ROOT_DIR,
+                "example_images/vicky-hladynets-C8Ta0gwPbQg-unsplash.jpg"),
             None,
             None,
             NEGATIVE_PROMPT,
@@ -288,7 +290,8 @@ def get_example():
             1024,
             "euler",
             50,
-            os.path.join(ROOT_DIR, "example_images/ComfyUI_temp_mllvz_00071_.png"),
+            os.path.join(ROOT_DIR,
+                         "example_images/ComfyUI_temp_mllvz_00071_.png"),
             None,
             None,
             NEGATIVE_PROMPT,
@@ -402,8 +405,6 @@ def get_example():
             1024 * 1024,
             0,
         ],
-
-
         [
             "Convert this image into Ghibli style",
             1024,
@@ -442,7 +443,6 @@ def get_example():
             1024 * 1024,
             0,
         ],
-
         [
             "Generate an ad for this object. Add this product into a minimalist interior inspired by japanese aesthetic. The picture should have the product front and center, placed on a minimalist shelf with a concrete wall behind it. Add plants and other stylish accessories to make it feel like a photo of a home. ",
             1024,
@@ -481,7 +481,6 @@ def get_example():
             1024 * 1024,
             0,
         ],
-
         [
             "It is placed on a figure display shelf inside a well-lit glass cabinet. Soft LED lights highlight its intricate details, and the shelf stands against a clean white wall, giving the collection a modern, curated look.",
             1024,
@@ -558,9 +557,6 @@ def get_example():
             1024 * 1024,
             0,
         ],
-        
-
-
         [
             "Edit the first image: add the man from the second image. The man is talking with a woman in the kitchen",
             1024,
@@ -709,7 +705,8 @@ def get_example():
             1024,
             "euler",
             50,
-            os.path.join(ROOT_DIR, "example_images/saml-altman-openai-ceo.webp"),
+            os.path.join(ROOT_DIR,
+                         "example_images/saml-altman-openai-ceo.webp"),
             os.path.join(ROOT_DIR, "example_images/elon-twitter-new-ceo.webp"),
             None,
             NEGATIVE_PROMPT,
@@ -747,7 +744,8 @@ def get_example():
             1024,
             "euler",
             50,
-            os.path.join(ROOT_DIR, "example_images/saml-altman-openai-ceo.webp"),
+            os.path.join(ROOT_DIR,
+                         "example_images/saml-altman-openai-ceo.webp"),
             os.path.join(ROOT_DIR, "example_images/elon-twitter-new-ceo.webp"),
             None,
             NEGATIVE_PROMPT,
@@ -760,7 +758,7 @@ def get_example():
             1024 * 1024,
             0,
         ],
-                [
+        [
             "Create a wedding figure based on the girl in the first image and the man in the second image. Set the background as a wedding hall, with the man dressed in a suit and the girl in a white wedding dress. Ensure that the original faces remain unchanged and are accurately preserved. The man should adopt a realistic style, whereas the girl should maintain their classic anime style.",
             1024,
             1024,
@@ -786,7 +784,8 @@ def get_example():
             "euler",
             50,
             os.path.join(ROOT_DIR, "example_images/8FtFUxRzXqaguVRGzkHvN.png"),
-            os.path.join(ROOT_DIR, "example_images/01194-20240127001056_1024x1536.png"),
+            os.path.join(ROOT_DIR,
+                         "example_images/01194-20240127001056_1024x1536.png"),
             None,
             NEGATIVE_PROMPT,
             5.0,
@@ -949,6 +948,7 @@ article = """
 ```
 """
 
+
 def main(args):
     # Gradio
     with gr.Blocks() as demo:
@@ -960,7 +960,8 @@ def main(args):
             with gr.Column():
                 # text prompt
                 instruction = gr.Textbox(
-                    label='Enter your prompt. Use "first/second image" or “第一张图/第二张图” as reference.',
+                    label=
+                    'Enter your prompt. Use "first/second image" or “第一张图/第二张图” as reference.',
                     placeholder="Type your prompt here...",
                 )
 
@@ -980,12 +981,16 @@ def main(args):
 
                 # slider
                 with gr.Row(equal_height=True):
-                    height_input = gr.Slider(
-                        label="Height", minimum=256, maximum=1024, value=1024, step=128
-                    )
-                    width_input = gr.Slider(
-                        label="Width", minimum=256, maximum=1024, value=1024, step=128
-                    )
+                    height_input = gr.Slider(label="Height",
+                                             minimum=256,
+                                             maximum=1024,
+                                             value=1024,
+                                             step=128)
+                    width_input = gr.Slider(label="Width",
+                                            minimum=256,
+                                            maximum=1024,
+                                            value=1024,
+                                            step=128)
                 with gr.Row(equal_height=True):
                     text_guidance_scale_input = gr.Slider(
                         label="Text Guidance Scale",
@@ -1018,24 +1023,20 @@ def main(args):
                         value=1.0,
                         step=0.1,
                     )
-                
+
                 def adjust_end_slider(start_val, end_val):
                     return max(start_val, end_val)
 
                 def adjust_start_slider(end_val, start_val):
                     return min(end_val, start_val)
-                
-                cfg_range_start.input(
-                    fn=adjust_end_slider,
-                    inputs=[cfg_range_start, cfg_range_end],
-                    outputs=[cfg_range_end]
-                )
 
-                cfg_range_end.input(
-                    fn=adjust_start_slider,
-                    inputs=[cfg_range_end, cfg_range_start],
-                    outputs=[cfg_range_start]
-                )
+                cfg_range_start.input(fn=adjust_end_slider,
+                                      inputs=[cfg_range_start, cfg_range_end],
+                                      outputs=[cfg_range_end])
+
+                cfg_range_end.input(fn=adjust_start_slider,
+                                    inputs=[cfg_range_end, cfg_range_start],
+                                    outputs=[cfg_range_start])
 
                 with gr.Row(equal_height=True):
                     scheduler_input = gr.Dropdown(
@@ -1045,9 +1046,11 @@ def main(args):
                         info="The scheduler to use for the model.",
                     )
 
-                    num_inference_steps = gr.Slider(
-                        label="Inference Steps", minimum=20, maximum=100, value=50, step=1
-                    )
+                    num_inference_steps = gr.Slider(label="Inference Steps",
+                                                    minimum=20,
+                                                    maximum=100,
+                                                    value=50,
+                                                    step=1)
                 with gr.Row(equal_height=True):
                     num_images_per_prompt = gr.Slider(
                         label="Number of images per prompt",
@@ -1057,9 +1060,11 @@ def main(args):
                         step=1,
                     )
 
-                    seed_input = gr.Slider(
-                        label="Seed", minimum=-1, maximum=2147483647, value=0, step=1
-                    )
+                    seed_input = gr.Slider(label="Seed",
+                                           minimum=-1,
+                                           maximum=2147483647,
+                                           value=0,
+                                           step=1)
                 with gr.Row(equal_height=True):
                     max_input_image_side_length = gr.Slider(
                         label="max_input_image_side_length",
@@ -1080,7 +1085,8 @@ def main(args):
                 with gr.Column():
                     # output image
                     global save_images
-                    save_images = gr.Checkbox(label="Save generated images", value=False)
+                    save_images = gr.Checkbox(label="Save generated images",
+                                              value=False)
                     output_image = gr.Image(label="Output Image")
                     # output text
                     output_text = gr.Textbox(
@@ -1152,33 +1158,34 @@ def main(args):
 
         gr.Markdown(article)
     # launch
-    demo.launch(share=args.share, server_port=args.port, allowed_paths=[ROOT_DIR])
+    demo.launch(server_name="0.0.0.0",
+                share=args.share,
+                server_port=args.port,
+                allowed_paths=[ROOT_DIR])
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run the OmniGen2")
-    parser.add_argument("--share", action="store_true", help="Share the Gradio app")
-    parser.add_argument(
-        "--port", type=int, default=7860, help="Port to use for the Gradio app"
-    )
-    parser.add_argument(
-        "--model_path",
-        type=str,
-        default="OmniGen2/OmniGen2",
-        help="Path or HuggingFace name of the model to load."
-    )
-    parser.add_argument(
-        "--enable_model_cpu_offload",
-        action="store_true",
-        help="Enable model CPU offload."
-    )
-    parser.add_argument(
-        "--enable_sequential_cpu_offload",
-        action="store_true",
-        help="Enable sequential CPU offload."
-    )
+    parser.add_argument("--share",
+                        action="store_true",
+                        help="Share the Gradio app")
+    parser.add_argument("--port",
+                        type=int,
+                        default=7860,
+                        help="Port to use for the Gradio app")
+    parser.add_argument("--model_path",
+                        type=str,
+                        default="OmniGen2/OmniGen2",
+                        help="Path or HuggingFace name of the model to load.")
+    parser.add_argument("--enable_model_cpu_offload",
+                        action="store_true",
+                        help="Enable model CPU offload.")
+    parser.add_argument("--enable_sequential_cpu_offload",
+                        action="store_true",
+                        help="Enable sequential CPU offload.")
     args = parser.parse_args()
     return args
+
 
 if __name__ == "__main__":
     args = parse_args()
